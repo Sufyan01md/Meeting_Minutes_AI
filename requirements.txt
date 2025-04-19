@@ -1,6 +1,9 @@
 
-streamlit
-google-generativeai
-moviepy
-pydub
-assemblyai
+streamlit>=1.32.0
+google-generativeai>=0.3.0
+moviepy==1.0.3
+decorator==4.4.2
+ffmpeg-python==0.2.0
+assemblyai>=0.16.1
+python-dotenv>=1.0.0
+pydub>=0.25.1

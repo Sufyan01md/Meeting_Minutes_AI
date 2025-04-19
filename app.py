@@ -18,7 +18,7 @@ def transcribe_audio(audio_path):
     # REAL IMPLEMENTATION (requires API key)
     import assemblyai as aai
     aai.settings.api_key = "c612fbf57f4a4d5eafa66cc16aa633c6"
-
+    
     config = aai.TranscriptionConfig(
         speaker_labels=True,
         speakers_expected=10,
@@ -26,10 +26,10 @@ def transcribe_audio(audio_path):
     )
     transcriber = aai.Transcriber()
     transcript = transcriber.transcribe(audio_path, config=config)
-
+    
     if transcript.status == aai.TranscriptStatus.error:
         raise Exception(transcript.error)
-
+    
     # Format transcript with speaker labels
     formatted_transcript = ""
     for utterance in transcript.utterances:
@@ -60,7 +60,7 @@ def generate_meeting_minutes(transcript):
 
 Transcript:
 {transcript}'''
-
+    
     response = model.generate_content(prompt)
     return response.text
 
@@ -75,7 +75,7 @@ if uploaded_file:
     col1, col2 = st.columns(2)
     with col1:
         st.video(uploaded_file)
-
+    
     if st.button("Generate Minutes", type="primary"):
         with st.spinner("Processing meeting content..."):
             try:
@@ -83,16 +83,16 @@ if uploaded_file:
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as tmp:
                     tmp.write(uploaded_file.getvalue())
                     video_path = tmp.name
-
+                
                 # Process audio
                 audio_path = extract_audio(video_path)
                 transcript = transcribe_audio(audio_path)
                 minutes = generate_meeting_minutes(transcript)
-
+                
                 with col2:
                     st.subheader("Generated Minutes")
                     st.markdown(minutes, unsafe_allow_html=True)
-
+                    
                     # Download button
                     st.download_button(
                         label="Download Minutes",
@@ -100,11 +100,11 @@ if uploaded_file:
                         file_name=f"meeting_minutes_{datetime.now().strftime('%Y%m%d')}.md",
                         mime="text/markdown"
                     )
-
+                
                 # Cleanup
                 os.unlink(video_path)
                 os.unlink(audio_path)
-
+                
             except Exception as e:
                 st.error(f"Processing error: {str(e)}")
                 st.info("Please ensure your video contains clear audio and try again.")
